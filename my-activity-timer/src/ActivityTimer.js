@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Button from './components/ui/Button'; // Assuming this is a custom Button component
-import { Card, CardContent, CardHeader, CardTitle } from './components/ui/Card';
+import { Button } from './components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
+import { Separator } from './components/ui/separator';
+import { ScrollArea } from './components/ui/scroll-area';
+import { Clock, Play, Square, Undo2, Eye, EyeOff, Trash2 } from 'lucide-react';
 
 const ActivityTimer = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -89,91 +92,104 @@ const ActivityTimer = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="fixed top-4 left-4 text-xl font-bold bg-white p-2 rounded shadow z-10">
+    <div className="p-4 max-w-4xl mx-auto">
+      <div className="fixed top-4 left-4 text-xl font-bold bg-white p-2 rounded shadow z-10 flex items-center">
+        <Clock className="mr-2" />
         {formatTime(currentTime)}
       </div>
       
-      <Card className="mb-4 mt-12">
+      <Card className="mb-4 mt-16">
         <CardHeader>
-          <CardTitle>Activity Timer</CardTitle>
+          <CardTitle className="text-2xl">Activity Timer</CardTitle>
         </CardHeader>
         <CardContent>
           {!isRunning ? (
-            <Button onClick={handleStart} className="bg-green-500 hover:bg-green-600 text-white">
-              Start
+            <Button onClick={handleStart} size="lg" className="w-full py-6 text-xl">
+              <Play className="mr-2" /> Start Activity
             </Button>
           ) : (
             <>
-              <div className="grid grid-cols-4 gap-2 mb-4">
+              <div className="grid grid-cols-4 gap-4 mb-6">
                 {buttonPresses.map((presses, index) => (
-                  <div key={index} className="flex flex-col">
-                    <Button onClick={() => handleButtonPress(index)} className="bg-blue-500 hover:bg-blue-600 text-white">
+                  <div key={index} className="flex flex-col space-y-2">
+                    <Button 
+                      onClick={() => handleButtonPress(index)}
+                      size="lg"
+                      className="py-8 text-xl"
+                    >
                       {index + 1} ({presses.length})
                     </Button>
                     <Button 
                       onClick={() => handleUndo(index)}
                       disabled={presses.length === 0}
-                      className="mt-1 bg-black hover:bg-red-600 text-white"
+                      size="sm"
+                      variant="destructive"
+                      className="py-2"
                     >
-                      Undo
+                      <Undo2 className="mr-1" /> Undo
                     </Button>
                   </div>
                 ))}
               </div>
-              <Button onClick={handleEnd} className="bg-red-500 hover:bg-red-600 text-white">
-                End
+              <Button onClick={handleEnd} size="lg" className="w-full py-6 text-xl" variant="destructive">
+                <Square className="mr-2" /> End Activity
               </Button>
             </>
           )}
-          <div className="mt-4">Duration: {formatDuration(duration)}</div>
+          <div className="mt-6 text-center text-xl font-semibold">
+            Duration: {formatDuration(duration)}
+          </div>
         </CardContent>
       </Card>
 
-      <div className="flex space-x-2">
-        <Button onClick={() => setShowLog(!showLog)} className="bg-blue-500 hover:bg-blue-600 text-white">
+      <div className="flex justify-between items-center mb-4">
+        <Button onClick={() => setShowLog(!showLog)} size="lg" className="flex items-center">
+          {showLog ? <EyeOff className="mr-2" /> : <Eye className="mr-2" />}
           {showLog ? 'Hide Log' : 'Show Log'}
         </Button>
-        <Button onClick={handleClearLog} className="bg-red-500 hover:bg-red-600 text-white">
-          Clear Log
+        <Button onClick={handleClearLog} size="lg" variant="destructive" className="flex items-center">
+          <Trash2 className="mr-2" /> Clear Log
         </Button>
       </div>
 
       {showLog && (
-        <Card className="mt-4">
+        <Card>
           <CardHeader>
-            <CardTitle>Activity Log</CardTitle>
+            <CardTitle className="text-2xl">Activity Log</CardTitle>
           </CardHeader>
           <CardContent>
-            {logs.length === 0 ? (
-              <div className="text-gray-500">No logs available.</div>
-            ) : (
-              logs.map((log, index) => (
-                <div key={index} className="mb-6 p-4 border rounded shadow-sm">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <span className="font-bold text-blue-600">Start:</span> {log.startTime}
-                    </div>
-                    <div>
-                      <span className="font-bold text-blue-600">End:</span> {log.endTime}
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <span className="font-bold text-blue-600">Duration:</span> {formatDuration(log.duration)}
-                  </div>
-                  <div className="mt-4 font-bold text-lg text-blue-600">Button Press Summary:</div>
-                  {log.buttonPresses.map(({ button, count, presses }) => (
-                    count > 0 && (
-                      <div key={button} className="ml-4 mt-2">
-                        <span className="font-semibold text-green-600">Button {button}:</span> 
-                        <span className="ml-2">pressed at {presses.join(', ')}</span>
-                        <span className="ml-2 font-semibold">Total: {count} times</span>
+            <ScrollArea className="h-[400px] pr-4">
+              {logs.length === 0 ? (
+                <div className="text-gray-500 text-center py-4">No logs available.</div>
+              ) : (
+                logs.map((log, index) => (
+                  <div key={index} className="mb-6 p-4 border rounded shadow-sm">
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div>
+                        <span className="font-bold text-blue-600">Start:</span> {log.startTime}
                       </div>
-                    )
-                  ))}
-                </div>
-              ))
-            )}
+                      <div>
+                        <span className="font-bold text-blue-600">End:</span> {log.endTime}
+                      </div>
+                    </div>
+                    <div className="mb-2">
+                      <span className="font-bold text-blue-600">Duration:</span> {formatDuration(log.duration)}
+                    </div>
+                    <Separator className="my-2" />
+                    <div className="font-bold text-lg text-blue-600 mb-2">Button Press Summary:</div>
+                    {log.buttonPresses.map(({ button, count, presses }) => (
+                      count > 0 && (
+                        <div key={button} className="ml-4 mb-2">
+                          <span className="font-semibold text-green-600">Button {button}:</span> 
+                          <span className="ml-2">pressed at {presses.join(', ')}</span>
+                          <span className="ml-2 font-semibold">Total: {count} times</span>
+                        </div>
+                      )
+                    ))}
+                  </div>
+                ))
+              )}
+            </ScrollArea>
           </CardContent>
         </Card>
       )}

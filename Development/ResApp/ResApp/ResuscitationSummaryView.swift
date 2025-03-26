@@ -106,7 +106,7 @@ struct EventRow: View {
             Text(formatTime(event.timestamp))
                 .font(.system(.body, design: .monospaced))
                 .foregroundColor(.secondary)
-                .frame(width: 80, alignment: .leading)
+                .frame(width: 100, alignment: .leading)
             
             eventIcon(for: event)
                 .frame(width: 30)

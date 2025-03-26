@@ -18,13 +18,13 @@ struct FunctionalButtonView: View {
 
     // Add lists for medications and events
     private let otherMedications = [
-        "Lidocaine",
-        "Magnesium",
         "Atropine",
         "Calcium",
         "D50",
-        "NaHCO3",
         "Dopamine Infusion",
+        "Lidocaine",
+        "Magnesium",
+        "NaHCO3",
         "Others"
     ]
     
@@ -78,7 +78,7 @@ struct FunctionalButtonView: View {
                             resuscitationManager.events.append(ResuscitationEvent(type: .ecgRhythm("VT/VF"), timestamp: Date()))
                             instructionSystem.handleRhythmInput(rhythm: "VT/VF")
                         } content: {
-                            Text("VT/VF")
+                            Text("pVT/VF")
                                 .font(.system(size: 32, weight: .semibold))
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(Color.blue)
